@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <title>Document</title>
+   <style>
+      * {
+         margin: 0;
+         padding: 0;
+         box-sizing: border-box;
+      }   
+      body{
+         height: 100vh;
+         width: 100vw;
+         background: #000;
+         overflow: hidden;
+      }
+      button{
+         padding: 27px 15px;
+         font-family: serif;
+         font-size: 1.5em;
+         background-color: #fff;
+         outline: none;
+         border: 2px solid grey;
+         border-radius: 50%;
+         cursor: pointer;
+         position: absolute;
+         transform-origin: center;
+         top: 50%;
+         left: 50%;
+      }
+      button:active{
+         transform: scale(.96);
+      }
+   </style>
+</head>
+<body>
+   <button>Click</button>   
+
+   <script>
+      let btn = document.getElementsByTagName('button')[0];
+      document.addEventListener('mousemove', e => {
+         let x = e.pageX; // Horizontal mouse position on the page
+         let y = e.pageY; // Vertical mouse position on the page
+         let clientRect = btn.getBoundingClientRect(); // element position on the page
+         const horizontal = distance(clientRect.x, x, clientRect.width); // horizontal mouse distance from the center of the element 
+         const vertical = distance(clientRect.y, y, clientRect.height); // vertical mouse distance from the center of the element
+         const horizontalOffset = clientRect.width / 2 + 50;
+         const verticalOffset = clientRect.height / 2 + 50;
+         if (Math.abs(horizontal) <= horizontalOffset && Math.abs(vertical) <= verticalOffset){
+            setPosition(
+               clientRect.x + horizontalOffset / horizontal * 3,
+               clientRect.y + verticalOffset / vertical * 3,
+            )
+         }        
+      });
+      function setPosition(x, y){
+         const pageRect = document.body.getBoundingClientRect();
+         const btnRect = btn.getBoundingClientRect();
+         if(distance(x, pageRect.left, btnRect.width) < 0){
+            x = pageRect.right - btnRect.width - 50;
+         }
+         if(distance(x, pageRect.right, btnRect.width) > 0){
+            x = pageRect.left + 50;
+         }
+         if(distance(y, pageRect.top, btnRect.height) < 0){
+            y = pageRect.bottom - btnRect.height - 50;
+         }
+         if(distance(y, pageRect.bottom, btnRect.height) > 0){
+            y = pageRect.top + 50;
+         }
+
+         if (x != Infinity && y != Infinity) {
+            btn.style.left = `${x}px`;
+            btn.style.top = `${y}px`;
+         }
+      }
+      function distance(btnPosition, mousePosition, size){
+         return btnPosition - mousePosition + size / 2;
+      }
+
+   </script>
+</body>
+</html>
